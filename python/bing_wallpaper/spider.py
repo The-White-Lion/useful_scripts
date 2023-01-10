@@ -91,5 +91,5 @@ class Spider:
 
     def run(self) -> dict:
         resp = self.get_resp()
-        pci_data = self.parse_resp(resp)
-        return pci_data
+        pic_data = self.parse_resp(resp)
+        return pic_data
