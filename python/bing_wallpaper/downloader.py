@@ -21,6 +21,7 @@ class Downloader:
         return resp
 
     def run(self) -> None:
+        """download picture"""
         resp = self.download()
         if resp.status_code == 200:
             # attempt using stream to complete saving file

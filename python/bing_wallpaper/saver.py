@@ -20,6 +20,7 @@ class Saver:
         return file_name
 
     def save_file(self) -> None:
+        """save picture to disk"""
         file_name = self.generate_file_name()
         file_direcotry = self.file_directory
         file_path = Path(file_direcotry / file_name)

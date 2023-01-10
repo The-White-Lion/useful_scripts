@@ -90,6 +90,7 @@ class Spider:
         sys.exit(1)
 
     def run(self) -> dict:
+        """get picture information"""
         resp = self.get_resp()
         pic_data = self.parse_resp(resp)
         return pic_data
