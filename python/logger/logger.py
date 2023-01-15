@@ -18,11 +18,10 @@ def touch_log_file(log_file: Path) -> bool:
 
 
 def config_log(log_file: Path, logger_name: str) -> None:
-    """config log, contains handler, formatter etc."""
+    """config log output, contains handler, formatter etc."""
     mkdir_log_directory(log_file)
     touch_log_file(log_file)
 
-    global logger
     logger = logging.getLogger(logger_name)
     file_handler = logging.FileHandler(log_file)
     file_handler.setLevel(logging.DEBUG)
@@ -34,6 +33,3 @@ def config_log(log_file: Path, logger_name: str) -> None:
     file_handler.setFormatter(formatter)
 
     logger.setLevel(logging.DEBUG)
-
-
-logger = None

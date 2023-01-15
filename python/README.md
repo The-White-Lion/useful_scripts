@@ -6,8 +6,26 @@ These scripts are a practical exercise in my learning.
 
 As time goes by, I will be adding more content.
 
-## Note
+## Note!
 
-If you want to run this code directly, you should add the `PYTHONPATH` environment variable with `..`.
+If you want to run this code directly in terminal, you should add the `PYTHONPATH` environment variable with `..`.
 
-BTW, because of the configuration of `PYTHOPATH`, the code cannot be run directly in vscode so far.
+BTW, if you want to run this code in vscode, you should create `settings.json` to specify the `PYTHONPATH` environment variables used by the current project.
+
+example:
+
+settings.json
+
+```json
+{
+    "python.envFile": "${workspaceFolder}/.vscode/.env",
+}
+```
+
+.env
+
+```text
+PYTHONPATH="python/"
+```
+
+The specific configuration is determined by the organization of your project.
