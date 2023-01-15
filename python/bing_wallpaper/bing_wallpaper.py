@@ -1,12 +1,12 @@
 import logging
+from pathlib import Path
 from spider import Spider
 from saver import Saver
 from downloader import Downloader
-from logger import config_log
+from logger.logger import config_log
 
 
 def main() -> None:
-    config_log()
     logger = logging.getLogger("bing_wallpaper.main")
     logger.info("start getting today bing wallpaper infomation =========================")
 
@@ -23,4 +23,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    config_log(Path(Path.home() / ".logs/bing_wallpaper/bing_wallpaper.log"), "bing_wallpaper")
     main()

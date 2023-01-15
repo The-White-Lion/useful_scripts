@@ -1,7 +1,8 @@
 import logging
+from pathlib import Path
 from spider import Spider
 from mongo import MongoContextManager
-from logger import config_log
+from logger.logger import config_log
 
 
 def main() -> None:
@@ -18,5 +19,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    config_log()
+    config_log(Path(Path.home() / ".logs/eudic/daily_sentence.log"), "eudic")
     main()

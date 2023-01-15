@@ -2,25 +2,28 @@ import logging
 from pathlib import Path
 
 
-def mkdir_log_directory() -> Path:
-    log_directory = Path(Path.home() / ".logs/bing_wallpaper")
+def mkdir_log_directory(log_file: Path) -> bool:
+    log_directory = Path(log_file.parent)
     if not log_directory.exists():
         log_directory.mkdir(parents=True)
 
-    return log_directory
+    return True
 
 
-def touch_log_file(directory: Path) -> Path:
-    log_file = Path(directory / "bing_wallpaper.log")
-    log_file.touch()
-    return log_file
+def touch_log_file(log_file: Path) -> bool:
+    if not log_file.exists():
+        log_file.touch()
+
+    return True
 
 
-def config_log() -> None:
+def config_log(log_file: Path, logger_name: str) -> None:
     """config log, contains handler, formatter etc."""
-    log_directory = mkdir_log_directory()
-    log_file = touch_log_file(log_directory)
+    mkdir_log_directory(log_file)
+    touch_log_file(log_file)
 
+    global logger
+    logger = logging.getLogger(logger_name)
     file_handler = logging.FileHandler(log_file)
     file_handler.setLevel(logging.DEBUG)
     logger.addHandler(file_handler)
@@ -33,4 +36,4 @@ def config_log() -> None:
     logger.setLevel(logging.DEBUG)
 
 
-logger = logging.getLogger("bing_wallpaper")
+logger = None
