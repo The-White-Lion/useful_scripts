@@ -1,11 +1,12 @@
 import sys
 import logging
 import requests
+from requests.exceptions import RequestException
 from simplejson.errors import JSONDecodeError
 
 
 class Spider:
-    """get request data that is json format from url"""
+    """get json format request data from url"""
     base_url = "https://global.bing.com/HPImageArchive.aspx"
     pic_base_url = "https://www.bing.com"
     base_parameters = {
@@ -52,7 +53,7 @@ class Spider:
 
         try:
             resp = requests.get(self.url, timeout=5, headers=self.headers, proxies=self.proxies)
-        except requests.RequestException as exception:
+        except RequestException as exception:
             self.logger.error("wallpaper info download falied: %s", exception)
             sys.exit(1)
 
