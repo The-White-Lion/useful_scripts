@@ -12,7 +12,7 @@ class YAMLReader:
 
     def get_file_content(self) -> str:
         """Read file content"""
-        self.logger.info("read config file content %s", self.config_file)
+        self.logger.info("read config file [%s]", self.config_file)
         with open(self.config_file, "r", encoding="utf-8",) as file:
             content = file.read()
 
