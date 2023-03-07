@@ -1,5 +1,6 @@
 import sys
 import logging
+from datetime import datetime
 import requests
 from requests.exceptions import RequestException
 from simplejson.errors import JSONDecodeError
@@ -79,6 +80,7 @@ class Spider:
                     "title": image_info["title"],
                     "copyright": desc,
                     "url": f"{self.pic_base_url}{pic_url}",
+                    "end_date": self.date_format(image_info["enddate"])
                 }
                 data.append(tmp)
                 self.logger.info("orininal picture data: %s", image_info)
@@ -89,6 +91,11 @@ class Spider:
         self.logger.error("status code error, actual value: %s", resp.status_code)
         self.logger.error("original body: %s", resp.content)
         sys.exit(1)
+
+    @staticmethod
+    def date_format(date_str: str) -> str:
+        """convert date format from %Y%m%d to %Y-%m-%d"""
+        return str(datetime.strptime(date_str, "%Y%m%d").date())
 
     def run(self) -> dict:
         """get picture information"""

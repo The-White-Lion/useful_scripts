@@ -1,6 +1,5 @@
 import logging
 from pathlib import Path
-from datetime import date
 
 
 class Saver:
@@ -14,8 +13,7 @@ class Saver:
 
     def generate_file_name(self) -> str:
         """using today's date and picture copyright info gengrate file name"""
-        now_date = date.today()
-        file_name = f"{now_date}@{self.pic_info['copyright']}.jpg"
+        file_name = f"{self.pic_info['end_date']}@{self.pic_info['copyright']}.jpg"
         self.logger.info("picture file name: %s", file_name)
         return file_name
 
