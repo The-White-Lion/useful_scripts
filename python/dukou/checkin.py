@@ -1,7 +1,7 @@
 import logging
-from pathlib import Path
-from spider import DukouSpider
+
 from logger.logger import config_log
+from spider import DukouSpider
 from yaml_reader import YAMLReader
 
 
@@ -20,5 +20,5 @@ def main():
 
 
 if __name__ == "__main__":
-    config_log(Path(Path.home() / ".logs/dukou/dukou.log"), "dukou")
+    config_log("~/.logs/dukou/dukou.log", "dukou")
     main()

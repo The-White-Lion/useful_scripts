@@ -17,8 +17,9 @@ def touch_log_file(log_file: Path) -> bool:
     return True
 
 
-def config_log(log_file: Path, logger_name: str) -> None:
+def config_log(file_path: str, logger_name: str) -> None:
     """config log output, contains handler, formatter etc."""
+    log_file = Path(file_path).expanduser()
     mkdir_log_directory(log_file)
     touch_log_file(log_file)
 

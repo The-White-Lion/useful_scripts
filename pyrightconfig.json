@@ -1,0 +1,11 @@
+{
+  "includes": [
+    "**/*.py"
+  ],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.pythonPath": "/usr/bin/python3",
+  "python.analysis.autoSearchPaths": false,
+  "python.analysis.extraPaths": [
+    "./python"
+  ]
+}
