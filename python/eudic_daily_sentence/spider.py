@@ -1,5 +1,9 @@
-import re
 import logging
+import re
+import sys
+from datetime import date
+from typing import Dict
+
 import requests
 
 
@@ -10,7 +14,7 @@ class Spider:
     pattern = {
         "en": '<p class="sect sect_en">(.+)</p>',
         "zh": '<p class="sect-trans">(.+)</p>',
-        "uuid": "<a href=http://dict.eudic.net/home/dailysentence/(.+) target=_blank>"
+        "uuid": "<a href=http://dict.eudic.net/home/dailysentence/(.+) target=_blank>",
     }
 
     def __init__(self):
@@ -23,10 +27,11 @@ class Spider:
             resp = requests.get(self.daily_sentence_url, timeout=5)
         except requests.RequestException as exception:
             self.logger.error("failed to get response: %s", exception)
+            sys.exit(1)
 
         return resp
 
-    def extract_sentence(self, content: str) -> dict:
+    def extract_sentence(self, content: str) -> Dict[str, str]:
         """extract sentence that contains chinese and english version from response content"""
 
         uuid = re.findall(self.pattern["uuid"], content)
@@ -36,15 +41,13 @@ class Spider:
         return {
             "_id": uuid[0],
             "zh": zh_sentence[0],
-            "en": eng_sentence[0]
+            "en": eng_sentence[0],
+            "date": str(date.today()),
         }
 
     def run(self) -> dict:
         """get daily sentence"""
         resp = self.get_resp()
-        if resp.status_code == 200:
-            content = resp.content.decode("utf-8")
-            sentence_data = self.extract_sentence(content)
-            return sentence_data
-
-        return None
+        content = resp.content.decode("utf-8")
+        sentence_data = self.extract_sentence(content)
+        return sentence_data

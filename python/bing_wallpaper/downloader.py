@@ -1,13 +1,14 @@
-import sys
 import logging
+import sys
 from io import BytesIO
+
 import requests
 
 
 class Downloader:
     """download picture with given url and save it to file"""
 
-    def __init__(self, url: str) -> None:
+    def __init__(self, url: str):
         self.url = url
         self.logger = logging.getLogger("bing_wallpaper.downloader")
 
@@ -20,16 +21,16 @@ class Downloader:
 
         return resp
 
-    def run(self) -> None:
+    def run(self) -> BytesIO:
         """download picture"""
         resp = self.download()
-        if resp.status_code == 200:
-            # attempt using stream to complete saving file
-            pic_bytes = BytesIO()
-            for chunk in resp.iter_content(chunk_size=1024*1024):
-                pic_bytes.write(chunk)
+        if resp.status_code != 200:
+            self.logger.error("status code error，actual value: %s", resp.status_code)
+            self.logger.error("original body: %s", resp.content)
+            sys.exit(1)
+        # attempt using stream to complete saving file
+        pic_bytes = BytesIO()
+        for chunk in resp.iter_content(chunk_size=1024 * 1024):
+            pic_bytes.write(chunk)
 
-            return pic_bytes
-        self.logger.error("status code error，actual value: %s", resp.status_code)
-        self.logger.error("original body: %s", resp.content)
-        sys.exit(1)
+        return pic_bytes

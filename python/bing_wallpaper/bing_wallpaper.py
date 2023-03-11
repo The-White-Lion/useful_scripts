@@ -6,7 +6,7 @@ from saver import Saver
 from spider import Spider
 
 
-def main() -> None:
+def main():
     logger = logging.getLogger("bing_wallpaper.main")
     logger.info(
         "start getting today bing wallpaper infomation ========================="

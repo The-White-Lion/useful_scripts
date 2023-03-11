@@ -1,19 +1,25 @@
-import sys
 import logging
+import sys
+from typing import Dict
+
 import yaml
 
 
 class YAMLReader:
     """Read account config from YAML file"""
 
-    def __init__(self, config_file: str) -> None:
+    def __init__(self, config_file: str):
         self.config_file = config_file
         self.logger = logging.getLogger("dukou.reader")
 
     def get_file_content(self) -> str:
         """Read file content"""
         self.logger.info("read config file [%s]", self.config_file)
-        with open(self.config_file, "r", encoding="utf-8",) as file:
+        with open(
+            self.config_file,
+            "r",
+            encoding="utf-8",
+        ) as file:
             content = file.read()
 
         if len(content) == 0:
@@ -21,12 +27,12 @@ class YAMLReader:
             sys.exit(1)
         return content
 
-    def _schema_validation(self, content: dict) -> None:
+    def _schema_validation(self, content: dict):
         """Schema Validation, config file format must be like this
-            account:
-                -
-                    email: example@github.com
-                    passwd: your_passwd
+        account:
+            -
+                email: example@github.com
+                passwd: your_passwd
         """
         if not content["account"]:
             self.logger.error("config format error please check it")
@@ -37,7 +43,7 @@ class YAMLReader:
                 self.logger.error("maybe you forgot to fill email or passwd")
                 sys.exit(1)
 
-    def read_config(self) -> dict:
+    def read_config(self) -> Dict[str, str]:
         """Parse the YAML document to the corresponding Python object"""
         file_content = self.get_file_content()
         yaml_content = yaml.safe_load(file_content)

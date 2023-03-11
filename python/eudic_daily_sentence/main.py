@@ -5,9 +5,9 @@ from mongo import MongoContextManager
 from spider import Spider
 
 
-def main() -> None:
+def main():
     logger = logging.getLogger("eudic.main")
-    connect_str = "mongodb://lion:lion@127.0.0.1"
+    connect_str = "mongodb://lion:lion@192.168.0.103"
 
     eudic_spider = Spider()
     sentence_data = eudic_spider.run()

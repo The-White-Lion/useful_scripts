@@ -1,20 +1,22 @@
-import sys
 import logging
+import sys
+from typing import List
+
 from pymongo import MongoClient
-from pymongo.errors import PyMongoError
 from pymongo.collection import Collection
+from pymongo.errors import PyMongoError
 
 
 class MongoContextManager:
     """Managing resource with context manager"""
 
-    def __init__(self, connect_string: str, db_name: str) -> None:
+    def __init__(self, connect_string: str, db_name: str):
         self.connect_string = connect_string
         self.db_name = db_name
         self.client = None
         self.logger = logging.getLogger("eudic.mongodb")
 
-    def __enter__(self) -> "MongoContextManager":
+    def __enter__(self):
         try:
             self.client = MongoClient(self.connect_string)
         except PyMongoError as exception:
@@ -36,8 +38,7 @@ class MongoContextManager:
         collection = database[collection_name]
         return collection
 
-
-    def create(self, collection_name: str, data: dict) -> list:
+    def create(self, collection_name: str, data: dict) -> List[str]:
         """insert record into specified mongodb collection"""
 
         collection = self.__get_collection(collection_name)
@@ -58,7 +59,7 @@ class MongoContextManager:
         result = collection.update_many(*data)
         return result.modified_count
 
-    def retrieve(self, collection_name: str, filters: dict = None) -> list:
+    def retrieve(self, collection_name: str, filters: dict = None) -> List[dict]:
         """query record in mongodb collection with given filters condition"""
 
         if filters is None:
