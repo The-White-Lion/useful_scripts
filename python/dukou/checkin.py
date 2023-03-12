@@ -1,8 +1,8 @@
 import logging
 
+from dukou.spider import DukouSpider
+from dukou.yaml_reader import YAMLReader
 from logger.logger import config_log
-from spider import DukouSpider
-from yaml_reader import YAMLReader
 
 
 def main():

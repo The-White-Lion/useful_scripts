@@ -1,8 +1,9 @@
 from pathlib import Path
 
-from bookmark_parser import BookMarkParser
 from logger.logger import config_log
-from model import VideoInfo
+from twitter_bookmark.bookmark_parser import BookMarkParser
+from twitter_bookmark.downloader import Downloader
+from twitter_bookmark.model import VideoInfo
 
 
 def main():
@@ -15,8 +16,12 @@ def main():
         data = reader.get_entries()
         for item in data:
             info = VideoInfo(item)
-            # 3. 下载视频
-            # 4. 保存视频
+            if info.file_type == "video":
+                # 3. 下载视频
+                if info.file_name and info.video_url:
+                    downloader = Downloader(info.file_name, info.video_url)
+                    downloader.save()
+                # 4. 保存视频
             print(info)
             print()
 

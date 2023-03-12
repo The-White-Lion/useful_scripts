@@ -1,9 +1,9 @@
 import logging
 
-from downloader import Downloader
+from bing_wallpaper.downloader import Downloader
+from bing_wallpaper.saver import Saver
+from bing_wallpaper.spider import Spider
 from logger.logger import config_log
-from saver import Saver
-from spider import Spider
 
 
 def main():

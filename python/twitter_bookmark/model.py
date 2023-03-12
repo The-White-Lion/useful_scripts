@@ -105,7 +105,7 @@ class VideoInfo:
         # full_text
         if full_text == "":
             full_text = str(uuid())
-        return f"{name}@{screen_name} {full_text}"
+        return f"{name}@{screen_name}{full_text}.mp4".replace(" ", "_")
 
     @staticmethod
     def remove_newlines_and_urls(text: str) -> str:

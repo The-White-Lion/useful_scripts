@@ -1,8 +1,8 @@
 import logging
 
+from eudic_daily_sentence.mongo import MongoContextManager
+from eudic_daily_sentence.spider import Spider
 from logger.logger import config_log
-from mongo import MongoContextManager
-from spider import Spider
 
 
 def main():
