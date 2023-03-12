@@ -41,10 +41,8 @@ class TweetDict(MutableMapping):
                 data = data[0]
             try:
                 data = data[key]
-            except KeyError as e:
-                self.logger.error(
-                    "failed to retrieve the key [%s], error message: %s", key, e
-                )
+            except KeyError:
+                self.logger.error("failed to retrieve the key [%s]", key)
                 return None
 
         if isinstance(data, list):
@@ -62,12 +60,12 @@ class VideoInfo:
         self.logger = logging.getLogger("bookmark.video")
         # 所有需要的数据都在 result 对应的字典中存放
         self.result = TweetDict(tweet)["content itemContent tweet_results result"]
-        # 有的数据多封装了一层 tweet，需要做处理
-        if self.result and self.result.get("tweet", None):
-            self.result = TweetDict(self.result["tweet"])
         if self.result is None:
             # 该数据缺少推文信息，需要处理
             self.logger.error("this item is missing the tweet information [%s]", tweet)
+        # 有的数据多封装了一层 tweet，需要做处理
+        if self.result and self.result.get("tweet", None):
+            self.result = TweetDict(self.result["tweet"])
         self.file_type = "video"
         self.video_url = self.get_video_url() if self.result else None
         self.file_name = self.generate_video_name() if self.result else None
@@ -76,6 +74,7 @@ class VideoInfo:
         """"""
         media = self.result["legacy extended_entities media"]
         if media is None:
+            self.logger.error("orininal info [%s]", self.result.data)
             return ""
         # 从收藏的书签来看，带视频的 tweet 只有一条视频，如果存在多个数据，则表明该书签是图片
         media = media[0]
@@ -94,15 +93,11 @@ class VideoInfo:
 
     def generate_video_name(self) -> str:
         """"""
-        # if self.file_type:
-        #     return "图片"
         screen_name = self.result["core user_results result legacy screen_name"]
         name = self.result["core user_results result legacy name"]
         full_text = self.result["legacy full_text"]
 
-        # flag: bool = full_text and screen_name and name
-        # if not flag:
-        if not (flag := full_text and screen_name and name):
+        if not (full_text and screen_name and name):
             return ""
 
         full_text = self.remove_newlines_and_urls(full_text)
@@ -110,7 +105,7 @@ class VideoInfo:
         # full_text
         if full_text == "":
             full_text = str(uuid())
-        return f"{screen_name}@{name} {full_text}"
+        return f"{name}@{screen_name} {full_text}"
 
     @staticmethod
     def remove_newlines_and_urls(text: str) -> str:

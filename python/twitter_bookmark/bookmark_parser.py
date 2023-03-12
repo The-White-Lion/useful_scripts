@@ -1,12 +1,13 @@
 import json
 import logging
+from pathlib import Path
 from typing import Dict, List
 
 
 class BookMarkParser:
     """Get the list of contents from a bookmark file"""
 
-    def __init__(self, file_name: str):
+    def __init__(self, file_name: Path):
         self.logger = logging.getLogger("bookmark.parser")
         self.file_name = file_name
         self.content = self.read_json_file()
@@ -14,7 +15,7 @@ class BookMarkParser:
     def read_json_file(self) -> Dict[str, dict]:
         """Read JSON file"""
         content = {}
-        with open(self.file_name, "r") as f:
+        with self.file_name.open("r") as f:
             content = json.load(f)
         return content
 
