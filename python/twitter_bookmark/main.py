@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from logger.logger import config_log
@@ -7,23 +8,27 @@ from twitter_bookmark.model import VideoInfo
 
 
 def main():
-    # 1. 获取所有书签文件
+    logger = logging.getLogger("bookmark.main")
     file_list = Path("./bookmark").iterdir()
     for bookmark_file in file_list:
-        # 2. 解析书签
-        print(f"当前文件为:{bookmark_file}")
         reader = BookMarkParser(bookmark_file)
         data = reader.get_entries()
         for item in data:
             info = VideoInfo(item)
             if info.file_type == "video":
-                # 3. 下载视频
                 if info.file_name and info.video_url:
                     downloader = Downloader(info.file_name, info.video_url)
-                    downloader.save()
-                # 4. 保存视频
-            print(info)
-            print()
+                    try:
+                        downloader.save()
+                    except Exception as e:
+                        logger.error(
+                            "An error occurred while saving file [%s]. The reason for [%s] is [%s].",
+                            info.file_name,
+                            info.video_url,
+                            e,
+                        )
+                print(info)
+                print()
 
 
 if __name__ == "__main__":

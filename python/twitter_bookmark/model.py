@@ -100,17 +100,24 @@ class VideoInfo:
         if not (full_text and screen_name and name):
             return ""
 
-        full_text = self.remove_newlines_and_urls(full_text)
+        full_text = self.remove_illegal_characters(full_text)
         # full_text 是 tweet 的正文部分，有的用户发布的 tweet 只有图片或者视频，此时生成一个 uuid 作为
         # full_text
         if full_text == "":
             full_text = str(uuid())
-        return f"{name}@{screen_name}{full_text}.mp4".replace(" ", "_")
+
+        file_name = f"{name}@{screen_name}{full_text}"
+        # full_text 过长会导致文件名超出系统限制，手动截断一部分
+        if len(file_name.encode("utf-8")) > 255:
+            file_name = file_name[:80]
+        return file_name + ".mp4"
 
     @staticmethod
-    def remove_newlines_and_urls(text: str) -> str:
+    def remove_illegal_characters(text: str) -> str:
         text = re.sub(r"[\r\n]", " ", text)
         text = re.sub(r"http\S+", "", text)
+        # some special characters cannot appear in file names
+        text = re.sub(r'[ <>:"?|/*\\]', "_", text)
         return text
 
     @staticmethod
