@@ -15,20 +15,25 @@ def main():
         data = reader.get_entries()
         for item in data:
             info = VideoInfo(item)
-            if info.file_type == "video":
-                if info.file_name and info.video_url:
-                    downloader = Downloader(info.file_name, info.video_url)
-                    try:
-                        downloader.save()
-                    except Exception as e:
-                        logger.error(
-                            "An error occurred while saving file [%s]. The reason for [%s] is [%s].",
-                            info.file_name,
-                            info.video_url,
-                            e,
-                        )
-                print(info)
-                print()
+            print(info)
+            print()
+
+            if info.file_type != "video":
+                continue
+            if not (info.file_name and info.video_url):
+                continue
+
+            downloader = Downloader(info.file_name, info.video_url)
+            try:
+                # downloader.save()
+                pass
+            except Exception as e:
+                logger.error(
+                    "An error occurred while saving file [%s]. The reason for [%s] is [%s].",
+                    info.file_name,
+                    info.video_url,
+                    e,
+                )
 
 
 if __name__ == "__main__":
