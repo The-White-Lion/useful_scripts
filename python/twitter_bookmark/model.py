@@ -57,42 +57,44 @@ class VideoInfo:
     """Video Information"""
 
     def __init__(self, tweet: dict):
-        self.logger = logging.getLogger("bookmark.video")
-        # 所有需要的数据都在 result 对应的字典中存放
+        self.logger = logging.getLogger("bookmark.video_info")
+        # All the required data is stored in the dictionary corresponding to the 'result'
         self.result = TweetDict(tweet)["content itemContent tweet_results result"]
         if self.result is None:
-            # 该数据缺少推文信息，需要处理
+            # The user may have deleted the tweet or the Twitter account associated with the tweet may have been suspended by Twitter, which causes this data to be dirty
             self.logger.error("this item is missing the tweet information [%s]", tweet)
-        # 有的数据多封装了一层 tweet，需要做处理
+        # It appears that some of the data is nested one more level deeper under the "tweet" key in the "result" dict
         if self.result and self.result.get("tweet", None):
             self.result = TweetDict(self.result["tweet"])
+
         self.file_type = "video"
         self.video_url = self.get_video_url() if self.result else None
         self.file_name = self.generate_video_name() if self.result else None
 
     def get_video_url(self) -> str:
-        """"""
+        """Get video or animated_gif url from tweet
+
+        Twitter treats Git animated images as video media files.
+        """
+
         media = self.result["legacy extended_entities media"]
         if media is None:
-            self.logger.error("orininal info [%s]", self.result.data)
+            self.logger.error("original info [%s]", self.result.data)
             return ""
-        # 从收藏的书签来看，带视频的 tweet 只有一条视频，如果存在多个数据，则表明该书签是图片
+        # From the saved bookmarks, it appears that most of the tweets only contain one video.
         media = media[0]
-        # animated_gif video photo
-        # 根据 type 获取对应的 url
-        file_type = media["type"]
-        if file_type == "photo":
+        if media["type"] == "photo":
             self.file_type = "photo"
-            # Todo 记录该 tweet 信息
-            return media["expanded_url"]
-        # twitter 将 gif 当作视频处理，此处可以使用相同的方法
-        # 3. 从视频列表中找到质量最高的视频
+            self.logger.info("photo tweet: [%s]", media["expanded_url"])
+            return ""
+
         video = self.get_hd_video(media["video_info variants"])
         video_url = video["url"].split("?")[0]
         return video_url
 
     def generate_video_name(self) -> str:
-        """"""
+        """Generate video name by full text and username"""
+
         screen_name = self.result["core user_results result legacy screen_name"]
         name = self.result["core user_results result legacy name"]
         full_text = self.result["legacy full_text"]
@@ -101,23 +103,23 @@ class VideoInfo:
             return ""
 
         full_text = self.remove_illegal_characters(full_text)
-        # full_text 是 tweet 的正文部分，有的用户发布的 tweet 只有图片或者视频，此时生成一个 uuid 作为
-        # full_text
-        if full_text == "":
-            full_text = str(uuid())
+        # fulltext could be an empty string
+        # Generate a UUID to avoid filename conflicts.
+        full_text = full_text if full_text else str(uuid())
 
-        file_name = f"{name}@{screen_name}{full_text}"
-        # full_text 过长会导致文件名超出系统限制，手动截断一部分
-        if len(file_name.encode("utf-8")) > 255:
+        # Remove illegal characters in the name and screen_name
+        file_name = self.remove_illegal_characters(f"{name}@{screen_name}{full_text}")
+        # The concatenated filename may exceed the system limit, and therefore, may need to be manually truncated
+        if len(file_name.encode("utf-8")) > 250:
             file_name = file_name[:80]
+
         return file_name + ".mp4"
 
     @staticmethod
     def remove_illegal_characters(text: str) -> str:
         text = re.sub(r"[\r\n]", " ", text)
         text = re.sub(r"http\S+", "", text)
-        # some special characters cannot appear in file names
-        text = re.sub(r'[ <>:"?|/*\\]', "_", text)
+        text = re.sub(r'[ <>:"?.|/*\\]', "", text)
         return text
 
     @staticmethod
@@ -133,4 +135,4 @@ class VideoInfo:
         return hd_video_info
 
     def __str__(self) -> str:
-        return f"推文类型:{self.file_type}\n视频名称:{self.file_name}\n视频地址:{self.video_url}"
+        return f"推文类型: [{self.file_type}]\n文件名称: [{self.file_name}]\n视频地址: [{self.video_url}]"

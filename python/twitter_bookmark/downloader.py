@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 import requests
 
@@ -24,12 +25,20 @@ class Downloader:
         finally:
             return resp
 
-    def save(self):
+    def save(self, directory: str = "video"):
+        self.check_or_mkdir(directory)
+
         self.logger.info("Starting to save the file [%s]", self.file_name)
         resp = self.download()
         resp.raise_for_status()
         with resp as r:
-            with open(self.file_name, "wb") as f:
+            with open(f"{directory}/{self.file_name}", "wb") as f:
                 for chunk in r.iter_content(chunk_size=1024 * 1024):
                     f.write(chunk)
         self.logger.info("The file [%s] is completely saved", self.file_name)
+
+    @staticmethod
+    def check_or_mkdir(directory: str):
+        directory_path = Path(directory).expanduser()
+        if not directory_path.exists():
+            directory_path.mkdir(parents=True)

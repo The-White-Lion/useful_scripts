@@ -14,6 +14,7 @@ class BookMarkParser:
 
     def read_json_file(self) -> Dict[str, dict]:
         """Read JSON file"""
+
         content = {}
         with self.file_name.open("r") as f:
             content = json.load(f)
@@ -25,6 +26,7 @@ class BookMarkParser:
 
         :return: entries list
         """
+
         keys = ("data", "bookmark_timeline", "timeline", "instructions", "entries")
         for key in keys:
             if isinstance(self.content, list):
