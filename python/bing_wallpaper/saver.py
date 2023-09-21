@@ -6,7 +6,7 @@ from pathlib import Path
 class Saver:
     """save picture from bytes in memory to disk"""
 
-    file_directory = Path("~/Pictures/bing").expanduser()
+    file_directory = Path("~/pictures/bing").expanduser()
 
     def __init__(self, file_content: BytesIO, pic_info: dict):
         if not self.file_directory.exists():
