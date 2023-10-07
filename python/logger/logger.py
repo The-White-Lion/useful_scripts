@@ -1,3 +1,4 @@
+import sys
 import logging
 from pathlib import Path
 
@@ -26,7 +27,10 @@ def config_log(file_path: str, logger_name: str):
     logger = logging.getLogger(logger_name)
     file_handler = logging.FileHandler(log_file)
     file_handler.setLevel(logging.DEBUG)
+    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.setLevel(logging.DEBUG)
     logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
 
     format_str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     date_format_str = "%Y-%m-%d %H:%M:%S"
