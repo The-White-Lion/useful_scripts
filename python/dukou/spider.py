@@ -1,5 +1,6 @@
 import logging
 import sys
+import os
 
 import requests
 from requests.exceptions import RequestException
@@ -15,8 +16,8 @@ class DukouSpider:
     }
 
     proxies = {
-        "http": "http://127.0.0.1:7890",
-        "https": "http://127.0.0.1:7890",
+        "http": os.getenv("http_proxy"),
+        "https": os.getenv("https_proxy"),
     }
 
     def __init__(self, email: str, passwd: str):

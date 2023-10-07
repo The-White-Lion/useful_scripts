@@ -1,4 +1,5 @@
 import logging
+import os
 
 from bing_wallpaper.downloader import Downloader
 from bing_wallpaper.saver import Saver
@@ -25,5 +26,6 @@ def main():
 
 
 if __name__ == "__main__":
-    config_log("~/.logs/bing_wallpaper/bing_wallpaper.log", "bing_wallpaper")
+    bing_log = os.getenv("BING_LOG", "~/.logs/bing_wallpaper/bing_wallpaper.log")
+    config_log(bing_log, "bing_wallpaper")
     main()

@@ -19,5 +19,6 @@ def main():
 
 
 if __name__ == "__main__":
-    config_log("~/.logs/eudic/daily_sentence.log", "eudic")
+    daily_log = os.getenv("DAILY_LOG", "~/.logs/eudic/daily_sentence.log")
+    config_log(dialy_log, "eudic")
     main()

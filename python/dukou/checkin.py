@@ -1,3 +1,4 @@
+import os
 import logging
 
 from dukou.spider import DukouSpider
@@ -20,5 +21,6 @@ def main():
 
 
 if __name__ == "__main__":
-    config_log("~/.logs/dukou/dukou.log", "dukou")
+    log_file = os.getenv("DUKOU_LOG", "~/.logs/dukou/dukou.log")
+    config_log(log_file, "dukou")
     main()
